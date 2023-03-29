@@ -39,12 +39,16 @@ def create_species_table(cur, conn):
 # TASK 1
 # CREATE TABLE FOR PATIENTS IN DATABASE
 def create_patients_table(cur, conn):
-    pass
+    cur.execute('DROP TABLE IF EXISTS Patients')
+    cur.execute('CREATE TABLE "Patients"("pet_id" INTEGER, "name" TEXT, "species_id" INTEGER')
+
+    
 
 
 # ADD FLUFFLE TO THE TABLE
 def add_fluffle(cur, conn):
-    pass
+    cur.execute('INSERT INTO Patients (pet_id, name, species_id) VALUES (?,?,?)', (0, "Fluffle", 0))
+    conn.commit()
     
 
 # TASK 2
@@ -59,14 +63,27 @@ def add_pets_from_json(filename, cur, conn):
     json_data = json.loads(file_data)
 
     # THE REST IS UP TO YOU
-    pass
+    count = 1
+    for pet_dict in json_data: 
+        id_pet = count
+        count += 1
+        pet_name = pet_dict["name"]
+        species_name = pet_dict["species"]
+        cur.execute('SELECT id from Species WHERE title = ?'(species_name))
+        id_species = int(cur.fetchone()[0])
+        cur.execute('INSERT INTO Patients (pet_id, name, species_id) VALUES (?,?,?)', (id_pet, pet_name, id_species))
+    conn.commit()
+
 
 
 # TASK 3
 # CODE TO OUTPUT NON-AGGRESSIVE PETS
 def non_aggressive_pets(aggressiveness, cur, conn):
-    pass
-
+    lst = []
+    cur.execute(f"SELECT name FROM Patients WHERE aggressiveness <= '{value}'")
+    for row in cur: 
+        lst.append(row[0])
+    return lst
 
 
 def main():
